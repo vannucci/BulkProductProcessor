@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { pb } from './lib/pocketbase'
 import LoginPage from './components/LoginPage'
-import ProductsView from './components/ProductsView'
+import Dashboard from './components/Dashboard'
 
 function App() {
   const [user, setUser] = useState(pb.authStore.model)
@@ -17,11 +17,11 @@ function App() {
   }
 
   return (
-    <div style={{ 
-      maxWidth: '1200px', 
-      margin: '0 auto',  // Centers the dashboard
-      padding: '2rem' 
-    }}>
+  <div style={{ 
+    maxWidth: '1600px',  // Increased for comfortable two-column layout
+    margin: '0 auto',
+    padding: '2rem' 
+  }}>
       <div style={{ 
         display: 'flex', 
         justifyContent: 'space-between', 
@@ -47,7 +47,7 @@ function App() {
         </button>
       </div>
       
-      <ProductsView />
+      <Dashboard user={user} />
     </div>
   )
 }

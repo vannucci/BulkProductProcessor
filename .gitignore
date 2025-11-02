@@ -5,4 +5,4 @@
 node_modules/
 pb_data/
 
-scripts/node_modules/
+file_watcher/node_modules/

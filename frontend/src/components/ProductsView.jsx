@@ -1,18 +1,21 @@
 import { useState, useEffect } from "react";
 import { pb } from "../lib/pocketbase";
-import SearchBar from "./SearchBar";
-import FileUpload from "./FileUpload";
-import FilesView from './FilesView'
 
-function ProductsView() {
+function ProductsView({ user, searchResults, isSearching }) {
   const [products, setProducts] = useState([]);
-  const [displayProducts, setDisplayProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchInfo, setSearchInfo] = useState(null);
 
   useEffect(() => {
+    if (!user) return;
+
     loadProducts();
-  }, []);
+
+    pb.collection("products").subscribe("*", () => {
+      loadProducts();
+    });
+
+    return () => pb.collection("products").unsubscribe();
+  }, [user]);
 
   async function loadProducts() {
     try {
@@ -20,7 +23,6 @@ function ProductsView() {
         sort: "-created",
       });
       setProducts(records);
-      setDisplayProducts(records);
     } catch (err) {
       console.error("Failed to load products:", err);
     } finally {
@@ -28,74 +30,19 @@ function ProductsView() {
     }
   }
 
-  function handleSearchResults(results, searchTerm) {
-    if (!searchTerm.trim()) {
-      clearSearch();
-      return;
-    }
-    setDisplayProducts(results);
-    setSearchInfo({ term: searchTerm, count: results.length });
-  }
-
-  function clearSearch() {
-    setDisplayProducts(products);
-    setSearchInfo(null);
-  }
-
   if (loading) {
     return <div>Loading products...</div>;
   }
 
+  const displayProducts = isSearching ? searchResults : products;
+
   return (
     <div>
-      <SearchBar onResults={handleSearchResults} />
-
-      {searchInfo ? (
-        <div
-          style={{
-            marginBottom: "1rem",
-            padding: "0.75rem",
-            background: "#e7f3ff",
-            borderRadius: "4px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <span>
-            Found <strong>{searchInfo.count}</strong> product(s) matching "
-            <strong>{searchInfo.term}</strong>"
-          </span>
-          <button
-            onClick={clearSearch}
-            style={{
-              padding: "0.25rem 0.75rem",
-              background: "white",
-              border: "1px solid #007bff",
-              borderRadius: "4px",
-              cursor: "pointer",
-              color: "#007bff",
-            }}
-          >
-            Clear Search
-          </button>
-        </div>
-      ) : (
-        <h2>All Products ({products.length})</h2>
-      )}
-
-      <FileUpload
-        onUploadComplete={(record) => {
-          console.log("File uploaded:", record);
-          // Later we'll refresh the files list here
-        }}
-      />
-
       <table
         style={{
           width: "100%",
           borderCollapse: "collapse",
-          marginTop: "1rem",
+          tableLayout: "fixed", // Prevents stretching
         }}
       >
         <thead>
@@ -114,6 +61,7 @@ function ProductsView() {
                 padding: "0.75rem",
                 textAlign: "left",
                 borderBottom: "2px solid #ddd",
+                width: "100px", // Fixed width for price
               }}
             >
               Price
@@ -123,6 +71,7 @@ function ProductsView() {
                 padding: "0.75rem",
                 textAlign: "left",
                 borderBottom: "2px solid #ddd",
+                width: "150px", // Fixed width for category
               }}
             >
               Category
@@ -134,9 +83,14 @@ function ProductsView() {
             <tr>
               <td
                 colSpan="3"
-                style={{ padding: "2rem", textAlign: "center", color: "#666" }}
+                style={{
+                  padding: "2rem",
+                  textAlign: "center",
+                  color: "#666",
+                  height: "auto", // Don't stretch
+                }}
               >
-                No products found
+                {isSearching ? "No products found" : "No products yet"}
               </td>
             </tr>
           ) : (
@@ -150,7 +104,6 @@ function ProductsView() {
           )}
         </tbody>
       </table>
-      <FilesView />
     </div>
   );
 }

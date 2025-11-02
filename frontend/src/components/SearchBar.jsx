@@ -14,17 +14,15 @@ function SearchBar({ onResults }) {
 
     setLoading(true);
     try {
-      // Query word_index for the search term (lowercase)
       const results = await pb.collection("word_index").getFullList({
         filter: `word = "${searchTerm.toLowerCase()}"`,
-        expand: "products", // Expands the relation to get full product details
+        expand: "products",
       });
 
-      // Extract the products from the expanded relation
       const products = results
         .map((record) => record.expand?.products)
         .flat()
-        .filter(Boolean); // Remove any null/undefined
+        .filter(Boolean);
 
       onResults(products, searchTerm);
     } catch (err) {
@@ -35,22 +33,64 @@ function SearchBar({ onResults }) {
     }
   }
 
+  function handleClear() {
+    setSearchTerm("");
+    onResults([], "");
+  }
+
   return (
     <form onSubmit={handleSearch} style={{ marginBottom: "2rem" }}>
-      <div style={{ display: "flex", gap: "0.5rem" }}>
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search by word (e.g., granite, soap, wooden)"
-          style={{
-            flex: 1,
-            padding: "0.75rem",
-            fontSize: "1rem",
-            border: "1px solid #ddd",
-            borderRadius: "4px",
-          }}
-        />
+      <div style={{ display: "flex", gap: "0.5rem", position: "relative" }}>
+        <div style={{ flex: 1, position: "relative" }}>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search by word (e.g., granite, soap, wooden)"
+            style={{
+              width: "100%",
+              padding: "0.75rem",
+              paddingRight: searchTerm ? "2.5rem" : "0.75rem", // Make room for X
+              fontSize: "1rem",
+              border: "1px solid #ddd",
+              borderRadius: "4px",
+            }}
+          />
+          {searchTerm && (
+            <button
+              type="button"
+              onClick={handleClear}
+              style={{
+                position: "absolute",
+                right: "0.5rem",
+                top: "50%",
+                transform: "translateY(-50%)",
+                background: "none",
+                border: "none",
+                color: "#666",
+                fontSize: "1.5rem",
+                cursor: "pointer",
+                padding: "0.25rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "24px",
+                height: "24px",
+                borderRadius: "50%",
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = "#f0f0f0";
+                e.target.style.color = "#000";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = "none";
+                e.target.style.color = "#666";
+              }}
+            >
+              ×
+            </button>
+          )}
+        </div>
         <button
           type="submit"
           disabled={loading || !searchTerm.trim()}

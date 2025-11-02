@@ -1,4 +1,4 @@
-.PHONY: start stop dev install clean help pb frontend watcher
+.PHONY: start stop dev install clean help pb frontend watcher generate
 
 help: ## Show this help message
 	@echo "Available commands:"
@@ -7,7 +7,8 @@ help: ## Show this help message
 install: ## Install all dependencies
 	@echo "📦 Installing dependencies..."
 	cd frontend && npm install
-	cd scripts && npm install
+	cd file_watcher && npm install
+	cd product_generator && npm install
 	@echo "✅ Dependencies installed"
 
 pb: ## Start PocketBase only
@@ -20,7 +21,11 @@ frontend: ## Start Frontend only
 
 watcher: ## Start File Watcher only
 	@echo "👀 Starting File Watcher..."
-	cd scripts && npm start
+	cd file_watcher && npm start
+
+generate: ## Generate test products (usage: make generate COUNT=500)
+	@echo "🎲 Generating products..."
+	cd product_generator && npm run generate $(COUNT)
 
 dev: ## Instructions to start all services
 	@echo "🚀 Starting services..."
@@ -41,7 +46,8 @@ stop: ## Stop all running services
 clean: stop ## Clean all generated files
 	@echo "🧹 Cleaning..."
 	rm -rf frontend/node_modules
-	rm -rf scripts/node_modules
+	rm -rf file_watcher/node_modules
+	rm -rf product_generator/node_modules
 	rm -rf frontend/dist
 	rm -rf pb_public/*
 	@echo "✅ Cleaned"
