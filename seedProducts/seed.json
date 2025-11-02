@@ -1,0 +1,102 @@
+[
+  {
+    "name": "Unbranded Wooden Pizza",
+    "price": "599.00",
+    "department": "Jewelery"
+  },
+  {
+    "name": "Luxurious Steel Keyboard",
+    "price": "39.00",
+    "department": "Home"
+  },
+  {
+    "name": "Handmade Cotton Towels",
+    "price": "569.00",
+    "department": "Music"
+  },
+  {
+    "name": "Modern Wooden Cheese",
+    "price": "171.00",
+    "department": "Games"
+  },
+  {
+    "name": "Licensed Granite Fish",
+    "price": "435.00",
+    "department": "Shoes"
+  },
+  {
+    "name": "Rustic Granite Soap",
+    "price": "817.00",
+    "department": "Industrial"
+  },
+  {
+    "name": "Recycled Granite Soap",
+    "price": "137.00",
+    "department": "Electronics"
+  },
+  {
+    "name": "Elegant Plastic Hat",
+    "price": "530.00",
+    "department": "Toys"
+  },
+  {
+    "name": "Luxurious Metal Car",
+    "price": "244.00",
+    "department": "Toys"
+  },
+  {
+    "name": "Modern Soft Salad",
+    "price": "971.00",
+    "department": "Shoes"
+  },
+  {
+    "name": "Rustic Metal Bacon",
+    "price": "770.00",
+    "department": "Games"
+  },
+  {
+    "name": "Handcrafted Frozen Chair",
+    "price": "330.00",
+    "department": "Health"
+  },
+  {
+    "name": "Unbranded Fresh Sausages",
+    "price": "844.00",
+    "department": "Garden"
+  },
+  {
+    "name": "Recycled Concrete Gloves",
+    "price": "497.00",
+    "department": "Sports"
+  },
+  {
+    "name": "Fantastic Granite Bike",
+    "price": "16.00",
+    "department": "Books"
+  },
+  {
+    "name": "Fantastic Wooden Car",
+    "price": "574.00",
+    "department": "Shoes"
+  },
+  {
+    "name": "Tasty Cotton Soap",
+    "price": "17.00",
+    "department": "Electronics"
+  },
+  {
+    "name": "Luxurious Granite Tuna",
+    "price": "716.00",
+    "department": "Baby"
+  },
+  {
+    "name": "Awesome Plastic Soap",
+    "price": "685.00",
+    "department": "Games"
+  },
+  {
+    "name": "Rustic Plastic Tuna",
+    "price": "197.00",
+    "department": "Garden"
+  }
+]

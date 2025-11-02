@@ -1,0 +1,12 @@
+{
+  "name": "file-watcher",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node file_watcher.js"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "pocketbase": "^0.26.3"
+  }
+}
