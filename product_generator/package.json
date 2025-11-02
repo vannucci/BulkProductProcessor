@@ -1,0 +1,11 @@
+{
+  "name": "product-generator",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "generate": "node generate.js"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^9.2.0"
+  }
+}
