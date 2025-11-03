@@ -4,6 +4,7 @@ import { pb } from "../lib/pocketbase";
 function SearchBar({ onResults }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
+  
 
   async function handleSearch(e) {
     e.preventDefault();
@@ -38,6 +39,16 @@ function SearchBar({ onResults }) {
     onResults([], "");
   }
 
+  function handleInputChange(e) {
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    // Reset search results when input is cleared
+    if (!value.trim()) {
+      onResults([], "");
+    }
+  }
+
   return (
     <form onSubmit={handleSearch} style={{ marginBottom: "2rem" }}>
       <div style={{ display: "flex", gap: "0.5rem", position: "relative" }}>
@@ -45,7 +56,7 @@ function SearchBar({ onResults }) {
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={handleInputChange}
             placeholder="Search by word (e.g., granite, soap, wooden)"
             style={{
               width: "100%",

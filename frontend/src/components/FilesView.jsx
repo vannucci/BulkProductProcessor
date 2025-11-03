@@ -1,30 +1,31 @@
 import { useState, useEffect } from "react";
 import { pb } from "../lib/pocketbase";
-import Toast from './Toast';
-import FileUpload from './FileUpload';
+import Toast from "./Toast";
+import FileUpload from "./FileUpload";
 
 function FilesView({ user }) {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState(null);
+  const [sortOrder, setSortOrder] = useState("-created");
 
   useEffect(() => {
     if (!user) return;
 
     loadFiles();
 
-    pb.collection('files').subscribe('*', (e) => {
-      console.log('📨 Files event:', e.action, e.record?.filename);
+    pb.collection("files").subscribe("*", (e) => {
+      console.log("📨 Files event:", e.action, e.record?.filename);
       loadFiles();
     });
 
-    return () => pb.collection('files').unsubscribe();
-  }, [user]);
+    return () => pb.collection("files").unsubscribe();
+  }, [user, sortOrder]);
 
   async function loadFiles() {
     try {
       const records = await pb.collection("files").getFullList({
-        sort: "-created",
+        sort: sortOrder,
       });
       setFiles(records);
     } catch (err) {
@@ -32,6 +33,10 @@ function FilesView({ user }) {
     } finally {
       setLoading(false);
     }
+  }
+
+  function toggleSort() {
+    setSortOrder((prev) => (prev === "-created" ? "created" : "-created"));
   }
 
   async function handleStartProcessing(fileId) {
@@ -47,40 +52,52 @@ function FilesView({ user }) {
 
       if (data.success) {
         setToast({
-          message: `✅ Processed ${data.processed} rows from ${data.filename}${data.skipped ? ` (${data.skipped} duplicates skipped)` : ''}`,
-          type: 'success'
+          message: `✅ Processed ${data.processed} rows from ${data.filename}${
+            data.skipped ? ` (${data.skipped} duplicates skipped)` : ""
+          }`,
+          type: "success",
         });
       } else {
         setToast({
           message: `Error: ${data.error}`,
-          type: 'error'
+          type: "error",
         });
       }
     } catch (err) {
       setToast({
         message: `Failed to process: ${err.message}`,
-        type: 'error'
+        type: "error",
       });
     }
   }
 
   function getStatusColor(status) {
     switch (status) {
-      case "pending": return "#ffc107";
-      case "processing": return "#17a2b8";
-      case "complete": return "#28a745";
-      case "error": return "#dc3545";
-      default: return "#6c757d";
+      case "pending":
+        return "#ffc107";
+      case "processing":
+        return "#17a2b8";
+      case "complete":
+        return "#28a745";
+      case "error":
+        return "#dc3545";
+      default:
+        return "#6c757d";
     }
   }
 
   function getStatusIcon(status) {
     switch (status) {
-      case "pending": return "⏳";
-      case "processing": return "⚙️";
-      case "complete": return "✅";
-      case "error": return "❌";
-      default: return "❓";
+      case "pending":
+        return "⏳";
+      case "processing":
+        return "⚙️";
+      case "complete":
+        return "✅";
+      case "error":
+        return "❌";
+      default:
+        return "❓";
     }
   }
 
@@ -98,12 +115,6 @@ function FilesView({ user }) {
         />
       )}
 
-      {/* <FileUpload
-        onUploadComplete={(record) => {
-          console.log("File uploaded:", record);
-        }}
-      /> */}
-
       {files.length === 0 ? (
         <div
           style={{
@@ -114,7 +125,8 @@ function FilesView({ user }) {
             color: "#666",
           }}
         >
-          No files found. Drop CSV files into the import_files/ folder or upload above.
+          No files found. Drop CSV files into the import_files/ folder or upload
+          above.
         </div>
       ) : (
         <table
@@ -125,16 +137,52 @@ function FilesView({ user }) {
         >
           <thead>
             <tr style={{ background: "#f0f0f0" }}>
-              <th style={{ padding: "0.75rem", textAlign: "left", borderBottom: "2px solid #ddd" }}>
+              <th
+                style={{
+                  padding: "0.75rem",
+                  textAlign: "left",
+                  borderBottom: "2px solid #ddd",
+                }}
+              >
                 Status
               </th>
-              <th style={{ padding: "0.75rem", textAlign: "left", borderBottom: "2px solid #ddd" }}>
+              <th
+                style={{
+                  padding: "0.75rem",
+                  textAlign: "left",
+                  borderBottom: "2px solid #ddd",
+                  cursor: "pointer",
+                  userSelect: "none",
+                }}
+                onClick={toggleSort}
+              >
+                Created {sortOrder === "-created" ? "↓" : "↑"}
+              </th>
+              <th
+                style={{
+                  padding: "0.75rem",
+                  textAlign: "left",
+                  borderBottom: "2px solid #ddd",
+                }}
+              >
                 Filename
               </th>
-              <th style={{ padding: "0.75rem", textAlign: "left", borderBottom: "2px solid #ddd" }}>
+              <th
+                style={{
+                  padding: "0.75rem",
+                  textAlign: "left",
+                  borderBottom: "2px solid #ddd",
+                }}
+              >
                 Rows
               </th>
-              <th style={{ padding: "0.75rem", textAlign: "left", borderBottom: "2px solid #ddd" }}>
+              <th
+                style={{
+                  padding: "0.75rem",
+                  textAlign: "left",
+                  borderBottom: "2px solid #ddd",
+                }}
+              >
                 Actions
               </th>
             </tr>
@@ -157,7 +205,16 @@ function FilesView({ user }) {
                     {getStatusIcon(file.status)} {file.status}
                   </span>
                 </td>
-                <td style={{ padding: "0.75rem", fontFamily: "monospace", fontSize: "0.9rem" }}>
+                <td style={{ padding: "0.75rem", fontSize: "0.9rem" }}>
+                  {new Date(file.created).toLocaleDateString()}
+                </td>
+                <td
+                  style={{
+                    padding: "0.75rem",
+                    fontFamily: "monospace",
+                    fontSize: "0.9rem",
+                  }}
+                >
                   {file.filename}
                 </td>
                 <td style={{ padding: "0.75rem" }}>{file.row_count || 0}</td>
